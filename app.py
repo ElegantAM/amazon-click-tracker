@@ -1,26 +1,61 @@
-from flask import Flask, request, redirect, jsonify
-import datetime
+from flask import Flask, redirect, request, render_template
+import sqlite3, datetime
 
 app = Flask(__name__)
 
+# Amazon links
+LINKS = {
+    "phoenix": "https://amzn.to/4jMLDN6",
+    "earbuds": "https://amzn.to/4q4nZNL"
+}
+
+# Database
+db = sqlite3.connect("clicks.db", check_same_thread=False)
+db.execute("""
+CREATE TABLE IF NOT EXISTS clicks (
+    slug TEXT,
+    source TEXT,
+    ip TEXT,
+    time TEXT
+)
+""")
+db.commit()
+
 @app.route("/")
 def home():
-    return "Amazon Click Tracker is LIVE ✅"
+    return "Amazon Click Tracker is running"
 
-@app.route("/track")
-def track():
-    asin = request.args.get("asin", "unknown")
-    tag = request.args.get("tag", "yourtag-21")
+@app.route("/go/<slug>")
+def go(slug):
+    amazon_link = LINKS.get(slug)
+    if not amazon_link:
+        return redirect("https://www.amazon.in")
 
-    # Log click (Render logs will store this)
-    print(f"CLICK | ASIN: {asin} | TAG: {tag} | TIME: {datetime.datetime.now()}")
+    source = request.args.get("src", "unknown")
 
-    amazon_url = f"https://www.amazon.in/dp/{asin}?tag={tag}"
-    return redirect(amazon_url)
+    db.execute(
+        "INSERT INTO clicks VALUES (?, ?, ?, ?)",
+        (
+            slug,
+            source,
+            request.remote_addr,
+            datetime.datetime.now().isoformat()
+        )
+    )
+    db.commit()
 
-@app.route("/health")
-def health():
-    return jsonify(status="ok")
+    return redirect(amazon_link)
+
+@app.route("/dashboard")
+def dashboard():
+    rows = db.execute("""
+        SELECT slug, source, COUNT(*) as total
+        FROM clicks
+        GROUP BY slug, source
+        ORDER BY total DESC
+    """).fetchall()
+
+    return render_template("dashboard.html", rows=rows)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
