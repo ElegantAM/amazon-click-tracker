@@ -12,6 +12,8 @@ app = Flask(__name__)
 LINKS = {
     "phoenix": "https://amzn.to/4jMLDN6",
     "earbuds": "https://amzn.to/4q4nZNL"
+    "trimmer":
+"https://amzn.to/3NkycIb"
 }
 
 # -----------------------------
