@@ -8,8 +8,8 @@ app = Flask(__name__)
 # AMAZON AFFILIATE LINKS
 # ===============================
 LINKS = {
-    "phoenix": "https://amzn.to/4jMLDN6",
-    "earbuds": "https://amzn.to/4q4nZNL"
+    "phoenix": "https://amzn.to/4qZxpL5",
+    "earbuds": "https://amzn.to/3YR09tw"
 }
 
 # ===============================
