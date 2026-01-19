@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Amazon links
 LINKS = {
     "phoenix": "https://amzn.to/4jMLDN6",
-    "earbuds": "https://amzn.to/4q4nZNL"
+    "sonyheadphone": "https://amzn.to/3LTdOgH"
 }
 
 # Database
