@@ -5,8 +5,29 @@ app = Flask(__name__)
 
 # Amazon links
 LINKS = {
-    "phoenix": "https://amzn.to/4jMLDN6",
-    "sonyheadphone": "https://amzn.to/3LTdOgH"
+    "phoenix": {
+        "title": "Fire-Boltt Phoenix Pro Smartwatch",
+        "price": "₹1,999",
+        "features": [
+            "Bluetooth Calling",
+            "1.39\" HD Display",
+            "120+ Sports Modes",
+            "COD Available"
+        ],
+        "link": "https://amzn.to/4jMLDN6"
+    },
+
+    "earbuds": {
+        "title": "Noise Wireless Earbuds",
+        "price": "₹1,299",
+        "features": [
+            "Powerful Bass",
+            "Fast Charging",
+            "Long Battery Life",
+            "COD Available"
+        ],
+        "link": "https://amzn.to/4q4nZNL"
+    }
 }
 
 # Database
@@ -27,7 +48,11 @@ def home():
 
 @app.route("/go/<slug>")
 def go(slug):
-    amazon_link = LINKS.get(slug)
+    product = LINKS.get(slug)
+if not product:
+    return redirect("https://www.amazon.in")
+
+amazon_link = product["link"]
     if not amazon_link:
         return redirect("https://www.amazon.in")
 
